@@ -1,12 +1,16 @@
-/* eslint-disable react/prop-types */
-
 import { useState } from "react";
+import { useTaskDispatch } from "../hooks/TasksContext";
 
-const AddTask = ({ onAddTask }) => {
+const AddTask = () => {
   const [text, setText] = useState("");
+  const dispatch = useTaskDispatch();
 
   const handleAddTask = () => {
-    onAddTask(text);
+    dispatch({
+      type: "TASK_ADDED",
+      payload: text,
+    });
+
     setText("");
   };
 

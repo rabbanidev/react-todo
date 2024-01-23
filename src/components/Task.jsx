@@ -1,18 +1,39 @@
 /* eslint-disable react/prop-types */
-
 import { useState } from "react";
+import { useTaskDispatch } from "../hooks/TasksContext";
 
-const Task = ({ task, onEditTask, onTaskDone, onDeleteTask }) => {
+const Task = ({ task }) => {
   const [isEditable, setIsEditable] = useState(false);
   const [text, setText] = useState(task.text);
+  const dispatch = useTaskDispatch();
 
-  // edit handler
+  // dispatch edit task
   const handleEditTask = () => {
-    onEditTask({
-      ...task,
-      text,
+    dispatch({
+      type: "TASK_EDITED",
+      payload: {
+        ...task,
+        text,
+      },
     });
+
     setIsEditable(false);
+  };
+
+  // dispatch task done
+  const handleTaskDone = () => {
+    dispatch({
+      type: "TASK_TOGGLED",
+      payload: task.id,
+    });
+  };
+
+  // dispatch task delete
+  const handleDeleteTask = () => {
+    dispatch({
+      type: "TASK_DELETED",
+      payload: task.id,
+    });
   };
 
   // let decided what to render
@@ -36,13 +57,9 @@ const Task = ({ task, onEditTask, onTaskDone, onDeleteTask }) => {
   return (
     <li>
       <label>
-        <input
-          type="checkbox"
-          checked={task.done}
-          onChange={() => onTaskDone(task.id)}
-        />
+        <input type="checkbox" checked={task.done} onChange={handleTaskDone} />
         {taskContent}
-        <button onClick={() => onDeleteTask(task.id)}>Delete</button>
+        <button onClick={handleDeleteTask}>Delete</button>
       </label>
     </li>
   );
